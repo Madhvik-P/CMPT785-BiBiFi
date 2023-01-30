@@ -1,2 +1,2 @@
 # CMPT785-BiBiFi
-BiBiFi Project for Secure Software Design Course
+BiBiFi Project in C++ for Secure Software Design Course
