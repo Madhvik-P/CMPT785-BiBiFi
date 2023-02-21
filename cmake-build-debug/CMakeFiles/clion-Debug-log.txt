@@ -1,8 +1,0 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/anantsunilamawasthy/Documents/SSDProject/CMPT785-BiBiFi -B /Users/anantsunilamawasthy/Documents/SSDProject/CMPT785-BiBiFi/cmake-build-debug
--- Found OpenSSL: /opt/homebrew/lib/libcrypto.dylib (found version "3.0.7")  
--- OpenSSL Found: 3.0.7
--- OpenSSL Include: /opt/homebrew/include
--- OpenSSL Libraries: /opt/homebrew/lib/libssl.dylib;/opt/homebrew/lib/libcrypto.dylib
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/anantsunilamawasthy/Documents/SSDProject/CMPT785-BiBiFi/cmake-build-debug
