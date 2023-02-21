@@ -1,0 +1,3 @@
+/Users/anantsunilamawasthy/Documents/SSDProject/CMPT785-BiBiFi/cmake-build-debug/CMakeFiles/filesystem_app.dir
+/Users/anantsunilamawasthy/Documents/SSDProject/CMPT785-BiBiFi/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/anantsunilamawasthy/Documents/SSDProject/CMPT785-BiBiFi/cmake-build-debug/CMakeFiles/rebuild_cache.dir
