@@ -51,7 +51,28 @@ public:
             cout << "Error: Could not open directory" << endl;
         }
 
+        while ((entry = readdir(dir)) != NULL) {
+            string random_d_name = string(entry->d_name);
+            string value;
+            bool is_dot_symbol = random_d_name == "." || random_d_name == "..";
+            if(!is_dot_symbol)
+                value = Randomizer::getMetaKey(root_path, random_d_name);
+            else
+                value = random_d_name;
+
+            if (entry->d_type == DT_DIR && !value.empty() && share_username == value) {
+                is_username_present = true;
+            }
+        }
+
+        closedir(dir);
+
+        if(!is_username_present) {
+            cout << "User " << share_username << " doesn't exist" << endl;
+        }
         
+        return is_username_present;
+    }
 
 
 
