@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.24)
+project(filesystem_app)
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(filesystem_app main.cpp app_modules/Auth.h app_modules/Menu.h app_modules/Utils.h app_modules/AppConstants.h app_modules/FileEncrypter.h app_modules/CreateUser.h app_modules/Randomizer.h)
+#set( OPENSSL_ROOT_DIR "/opt/homebrew/opt/openssl")
+find_package(OpenSSL REQUIRED)
+if ( OPENSSL_FOUND )
+    message(STATUS "OpenSSL Found: ${OPENSSL_VERSION}")
+    message(STATUS "OpenSSL Include: ${OPENSSL_INCLUDE_DIR}")
+    message(STATUS "OpenSSL Libraries: ${OPENSSL_LIBRARIES}")
+endif()
+target_link_libraries(${PROJECT_NAME} OpenSSL::SSL)
