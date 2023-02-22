@@ -50,7 +50,6 @@ namespace AppUtils {
             return result.str();
         };
 
-
         static string trimAfterRootDir(string dir_name, string path) {
 
             vector<string> parts = Utils::split(path, '/');
@@ -63,8 +62,15 @@ namespace AppUtils {
             string final_path = Utils::joinVectorToString(parts, 0, "/");
             return final_path;
         }
-        
-         
+
+        static string getRootDirPath(string pwd_path, string dir_name){
+
+            string root_dir_path = Utils::trimAfterRootDir(dir_name,pwd_path);
+            return  root_dir_path;
+            
+        }
+
+
 
     };
 }
