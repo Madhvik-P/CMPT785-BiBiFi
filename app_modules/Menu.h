@@ -38,6 +38,23 @@ private:
 
 public:
 
+    bool checkUsernameExist(string share_username = ""){
+
+        string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
+        string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
+        DIR *dir;
+        struct dirent *entry;
+        bool is_username_present = false;
+        dir = opendir(root_path.c_str());
+
+        if (!dir) {
+            cout << "Error: Could not open directory" << endl;
+        }
+
+        
+
+
+
 };
 
 #endif //FILESYSTEM_APP_MENU_H
