@@ -31,7 +31,18 @@ namespace AppUtils {
                     result = command;
                 }
             }
-        }    
+        }
+
+        static string joinVectorToString(vector<string> tokens, int fromIndex = 0, string separator = " ") {
+            ostringstream result;
+            for (vector<string>::iterator it = tokens.begin() + fromIndex; it != tokens.end(); it++) {
+                if (it != tokens.begin() + fromIndex) {
+                    result << separator;
+                }
+                result << *it;
+            }
+            return result.str();
+        };        
 
     };
 }
