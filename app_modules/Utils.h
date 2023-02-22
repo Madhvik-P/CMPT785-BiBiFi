@@ -27,6 +27,11 @@ namespace AppUtils {
 
             for (const auto &[command, value]: values) {
                 if (value) {
+                    trueCount++;
+                    result = command;
+                }
+            }
+        }    
 
     };
 }
