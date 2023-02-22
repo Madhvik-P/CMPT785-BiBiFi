@@ -74,6 +74,11 @@ public:
         return is_username_present;
     }
 
+    void implCAT(string file_name, string actual_filename) {
+        
+        FileEncryptor::show_decrypted_data(file_name, actual_filename);
+    }
+
     void displayMenu(bool is_admin) {
 
         cout << "\n";
@@ -94,7 +99,7 @@ public:
         if (is_admin) {
             cout << "9. adduser <username>" << endl;
         }
-        
+
         cout << "\n";
 
     }
