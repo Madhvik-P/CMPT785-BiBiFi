@@ -67,10 +67,22 @@ namespace AppUtils {
 
             string root_dir_path = Utils::trimAfterRootDir(dir_name,pwd_path);
             return  root_dir_path;
-            
+
         }
 
+        static vector<string> getPublicAndPrivateKeysPath(string root_path){
+            vector<string> paths;
 
+            vector<string> data = split(root_path, '/');
+            data.pop_back();
+
+            string private_key_path = joinVectorToString(data, 0, "/");
+            string public_key_path = root_path + "/" + Randomizer::getMetaValue(root_path, USERS);
+
+            paths.push_back(public_key_path);
+            paths.push_back(private_key_path);
+            return paths;
+        }
 
     };
 }
