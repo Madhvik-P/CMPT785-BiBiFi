@@ -70,8 +70,33 @@ public:
         if(!is_username_present) {
             cout << "User " << share_username << " doesn't exist" << endl;
         }
-        
+
         return is_username_present;
+    }
+
+    void displayMenu(bool is_admin) {
+
+        cout << "\n";
+        cout << "Welcome: " + username << endl;
+        cout << "\n";
+        cout << "Menu:" << endl;
+        cout << "Please select the following options: " << endl;
+        cout << "\n";
+        cout << "1. cd <directory>" << endl;
+        cout << "2. pwd" << endl;
+        cout << "3. ls" << endl;
+        cout << "4. cat <filename>" << endl;
+        cout << "5. share <filename> <username>" << endl;
+        cout << "6. mkdir <directory_name>" << endl;
+        cout << "7. mkfile <filename> <contents>" << endl;
+        cout << "8. exit" << endl;
+        // for admin
+        if (is_admin) {
+            cout << "9. adduser <username>" << endl;
+        }
+        
+        cout << "\n";
+
     }
 
 
