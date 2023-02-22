@@ -21,7 +21,16 @@ namespace AppUtils {
     class Utils {
         public:
 
+        static Command findCommand(const map<Command, bool> &values) {
+            Command result;
+            int trueCount = 0;
+
+            for (const auto &[command, value]: values) {
+                if (value) {
+
     };
 }
+
+
 
 #endif //FILESYSTEM_APP_UTILS_H
