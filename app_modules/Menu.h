@@ -75,7 +75,7 @@ public:
     }
 
     void implCAT(string file_name, string actual_filename) {
-        
+
         FileEncryptor::show_decrypted_data(file_name, actual_filename);
     }
 
@@ -102,6 +102,40 @@ public:
 
         cout << "\n";
 
+    }
+
+    void implLS() {
+
+        string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
+        string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
+        DIR *dir;
+        struct dirent *entry;
+        dir = opendir(".");
+        
+        if (!dir) {
+            cout << "Error: Could not open directory" << endl;
+        }
+
+        while ((entry = readdir(dir)) != NULL) {
+            string random_d_name = string(entry->d_name);
+            string value;
+
+            bool is_dot_symbol = random_d_name == "." || random_d_name == "..";
+            if(!is_dot_symbol)
+                value = Randomizer::getMetaKey(root_path, random_d_name);
+            else
+                value = random_d_name;
+
+            if(value == USERS) continue;
+
+            if (entry->d_type == DT_REG && !value.empty()) {
+                cout << "f -> " << value << endl;
+            } else if (entry->d_type == DT_DIR && !value.empty()) {
+                cout << "d -> " << value << endl;
+            }
+        }
+
+        closedir(dir);
     }
 
 
