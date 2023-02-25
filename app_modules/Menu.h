@@ -134,6 +134,48 @@ public:
 
     }
 
+    void implCD(string token) {
+        string translated_path;
+        string root_dir = Utils::getRootDirPath(Utils::getPwdPath(),FILE_SYSTEM);
+        translated_path = Randomizer::getTranslatedPath(root_dir, token);
+
+        string f_path = getFuturePath(translated_path);
+        vector<string> _f_path_parts = Utils::split(f_path, '/');
+        string randomised_username = Randomizer::getMetaValue(root_dir, username);
+        bool contains_root_dir = Utils::checkIfPathContainsRootDir(_f_path_parts, is_admin, randomised_username);
+        if (f_path.empty() || !contains_root_dir) {
+            return;
+        }
+        chdir(translated_path.c_str());
+    }
+
+    string getFuturePath(string file_path) {
+        try {
+            string command = "cd " + file_path + "&& pwd";
+            string futurePath = "";
+
+            // execute command and capture output
+            FILE* pipe = popen(command.c_str(), "r");
+            if (!pipe) {
+                cout << "Error executing command: " << command << endl;
+                return "";
+            }
+
+            char buffer[128];
+            while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+                futurePath += buffer;
+            }
+
+            pclose(pipe);
+            // remove trailing newline
+            futurePath.erase(futurePath.find_last_not_of("\n") + 1);
+            return futurePath;
+        }catch(const filesystem_error& ex){
+            cout << "Error: " << ex.what() << endl;
+            return "";
+        }
+    };
+
 };
 
 #endif //FILESYSTEM_APP_MENU_H
