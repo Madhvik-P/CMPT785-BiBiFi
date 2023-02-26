@@ -327,6 +327,32 @@ public:
         }
     };
 
+    int createUser(string root_dir_path, string username) {
+        Utils::translateDirOrFileWhenCreated(USER + username);
+        string randomized_name = Utils::translateDirOrFileWhenCreated(username);
+        string user_folder_path = root_dir_path + "/" + randomized_name;
+        int p_status = stat(user_folder_path.c_str(), &info);
+        if (p_status == 0 && S_ISDIR(info.st_mode)) {
+            cout << "User " << username << " already exists" << endl;
+            return 200;
+        }
+        int _status = mkdir(user_folder_path.c_str(), 0777);
+        if (_status == 0) {
+            string child_folder_local = user_folder_path + "/" + Randomizer::getMetaValue(root_dir_path, PERSONAL);
+            string child_folder_shared = user_folder_path + "/" + Randomizer::getMetaValue(root_dir_path, SHARED);
+            mkdir(child_folder_local.c_str(), 0777);
+            mkdir(child_folder_shared.c_str(), 0777);
+            return 201;
+        }
+        else return 500;
+    }
+
+    void implMKFILE(string filename, string content) {
+        string filename_value = Utils::translateDirOrFileWhenCreated(filename);
+        string public_key_path = Utils::getPublicUserKeys() + "/" + username + PUBLIC_KEY_EXT;
+        mRSAEncryption.encryptRSA(content, public_key_path, filename_value);
+    }
+
 };
 
 #endif //FILESYSTEM_APP_MENU_H

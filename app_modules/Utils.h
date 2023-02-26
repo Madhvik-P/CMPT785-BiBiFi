@@ -124,6 +124,15 @@ namespace AppUtils {
             return paths[0];
         }
 
+        static string getUsernameFromFilePath(string path) {
+            string username = "";
+            size_t pos = path.find("/"+FILE_SYSTEM+"/");
+            if (pos != string::npos) {
+                username = path.substr(pos + 12, path.find("/", pos + 12) - pos - 12);
+            }
+            return username;
+        }
+
     };
 }
 
