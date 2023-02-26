@@ -22,6 +22,53 @@ namespace AppUtils {
     class Utils {
         public:
 
+
+        static Command getCommandName(vector<string> tokens, string input) {
+            bool is_size_more_than_one = tokens.size() > 1;
+            bool is_size_two = tokens.size() == 2;
+            bool is_size_three = tokens.size() == 3;
+            map<Command, bool> values = {
+                    {CMD_EXIT,    !tokens.empty() && tokens[0] == EXIT},
+                    {CMD_ADDUSER, is_size_two && tokens[0] == ADDUSER},
+                    {CMD_MKFILE,  is_size_more_than_one && tokens[0] == MKFILE},
+                    {CMD_MKDIR,   is_size_two && tokens[0] == MKDIR},
+                    {CMD_SHARE,   is_size_three && tokens[0] == SHARE},
+                    {CMD_CAT,     is_size_two && tokens[0] == CAT},
+                    {CMD_LS,      (is_size_two && tokens[0] == LS) || input == LS},
+                    {CMD_CD,      is_size_two && tokens[0] == CD},
+                    {CMD_PWD,     input == PWD},
+                    {CMD_HELP,     input == HELP}
+            };
+            return findCommand(values);
+        };
+
+        static vector<string> split(string s, char delimiter) {
+            vector<string> words;
+            istringstream iss(s);
+            string word;
+
+            while (getline(iss, word, delimiter)) {
+                words.push_back(word);
+            }
+
+            return words;
+        };
+        // Anant
+        static bool checkIfPathContainsRootDir(vector<string> inputArray, bool is_admin, string username) {
+            bool containsFilesystem = false;
+
+            for (int i = 0; i < inputArray.size(); i++) {
+                if (is_admin && inputArray[i] == FILE_SYSTEM) {
+                    containsFilesystem = true;
+                    break;
+                }else if (!is_admin && inputArray[i] == username) {
+                    containsFilesystem = true;
+                    break;
+                }
+            }
+            return containsFilesystem;
+        }
+
         static vector<string> getPublicAndPrivateKeyPaths() {
             string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
             string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
@@ -131,6 +178,55 @@ namespace AppUtils {
                 username = path.substr(pos + 12, path.find("/", pos + 12) - pos - 12);
             }
             return username;
+        }
+
+        static bool checkDirectoryExists(string dir_name) {
+            int p_status = stat(dir_name.c_str(), &info);
+            if (p_status == 0 && S_ISDIR(info.st_mode)) return true;
+            else return false;
+        };
+
+        static int findItemIndexFromVector(vector<string> path, string item_name) {
+            auto it = find(path.begin(), path.end(), item_name);
+            if (it != path.end()) return it - path.begin();
+            else return -1;
+        }
+
+        static string getPwdPath() {
+            char cwd[1024];
+            if (getcwd(cwd, sizeof(cwd)) == NULL) {
+                cout << "Error: Could not get current directory" << endl;
+            }
+            return cwd;
+        }
+
+        static vector<string> getFilesInsideDir(string path) {
+            vector<string> files;
+            DIR *dir;
+            struct dirent *entry;
+            dir = opendir(path.c_str());
+            if (!dir) {
+                cout << "Error: Could not open directory" << endl;
+            }
+            while ((entry = readdir(dir)) != NULL) {
+                if (entry->d_type == DT_REG) {
+                    files.push_back(entry->d_name);
+                }
+            }
+            closedir(dir);
+            return files;
+        }
+
+        static string findPublicKey(vector<string> all_files, string username) {
+            string public_key = "";
+            for (const string& k : all_files) {
+                vector<string> kp = Utils::split(k, '_');
+                if (kp[0] == username) {
+                    public_key = k;
+                    break;
+                }
+            }
+            return public_key;
         }
 
     };

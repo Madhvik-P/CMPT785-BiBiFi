@@ -44,12 +44,12 @@ private:
     FileEncrypter mFileEncrypter;
 
 public:
-    // Madhvik
+
     Menu(string u, bool a) {
         username = u;
         is_admin = a;
     };
-    // Madhvik
+
     int showCMD() {
         // TODO: need to get the value from the main function
         displayMenu();
