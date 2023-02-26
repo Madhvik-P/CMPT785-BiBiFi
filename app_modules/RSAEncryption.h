@@ -93,6 +93,39 @@ public:
         return buffer.str();
     }
 
+    string print_decrypted_file(string private_key_str, string file_path) {
+        OpenSSL_add_all_algorithms();
+        ERR_load_crypto_strings();
+
+        // Convert private key string to RSA structure
+        const char* private_key_cstr = private_key_str.c_str();
+        BIO* bio = BIO_new_mem_buf((void*)private_key_cstr, -1);
+        RSA* rsa = PEM_read_bio_RSAPrivateKey(bio, NULL, NULL, NULL);
+        BIO_free(bio);
+
+        // Read encrypted data from file
+        ifstream encryptedDataFile(file_path, ios::in | ios::binary);
+        if (!encryptedDataFile) {
+            cout << "print_decrypted_file: Error opening encrypted data file." << endl;
+            RSA_free(rsa);
+            return "";
+        }
+        vector<unsigned char> encryptedData((istreambuf_iterator<char>(encryptedDataFile)), istreambuf_iterator<char>());
+        encryptedDataFile.close();
+
+        // Decrypt encrypted data
+        vector<unsigned char> decryptedData(RSA_size(rsa));
+        int decryptedDataLen = RSA_private_decrypt(encryptedData.size(), &encryptedData[0], &decryptedData[0], rsa, RSA_PKCS1_OAEP_PADDING);
+        if (decryptedDataLen == -1) {
+            cout << "Error decrypting data." << endl;
+            RSA_free(rsa);
+            return "";
+        }
+
+        RSA_free(rsa);
+        return string((char*)&decryptedData[0], decryptedDataLen);
+    }
+
 };
 
 #endif //FILESYSTEM_APP_RSAENCRYPTION_H
