@@ -1,5 +1,6 @@
-#ifndef FILESYSTEM_APP_MENU_H
-#define FILESYSTEM_APP_MENU_H
+#ifndef FILESYSTEM_APP_SHAREFILE_H
+#define FILESYSTEM_APP_SHAREFILE_H
+
 
 #include <iostream>
 #include <vector>
@@ -21,34 +22,17 @@
 #include "CreateUser.h"
 #include "Randomizer.h"
 #include "RSAEncryption.h"
-#include "ShareFile.h"
-#include "KeyEncrypter.h"
 
 using namespace std;
 using namespace AppUtils;
 using namespace AppConstants::DefaultDirectory;
 
+class ShareFile{
 
-class Menu {
-
-private:
-
-    string username = "";
-    vector<string> breadCrumb;
-    string current_dir_name = "";
-    FileEncrypter enc;
-    CreateUser mCreateUser;
     RSAEncryption mRSAEncryption;
-    ShareFile mShareFile;
-    KeyEncrypter mKeyEncrypter;
-    bool is_admin;
-    FileEncrypter mFileEncrypter;
 
-public:
+public: 
 
+}; 
 
-
-
-};
-
-#endif //FILESYSTEM_APP_MENU_H
+#endif //FILESYSTEM_APP_SHAREFILE_H

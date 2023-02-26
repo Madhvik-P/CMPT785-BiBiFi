@@ -1,5 +1,5 @@
-#ifndef FILESYSTEM_APP_MENU_H
-#define FILESYSTEM_APP_MENU_H
+#ifndef FILESYSTEM_APP_RSAENCRYPTION_H
+#define FILESYSTEM_APP_RSAENCRYPTION_H
 
 #include <iostream>
 #include <vector>
@@ -14,41 +14,30 @@
 #include <dirent.h>
 #include <map>
 #include <cstdlib>
+#include <fstream>
+#include <string>
+#include <openssl/rsa.h>
+#include <openssl/pem.h>
+#include <openssl/err.h>
 #include "Auth.h"
 #include "Utils.h"
 #include "AppConstants.h"
 #include "FileEncrypter.h"
 #include "CreateUser.h"
 #include "Randomizer.h"
-#include "RSAEncryption.h"
-#include "ShareFile.h"
-#include "KeyEncrypter.h"
 
 using namespace std;
 using namespace AppUtils;
 using namespace AppConstants::DefaultDirectory;
 
-
-class Menu {
+class RSAEncryption {
 
 private:
-
-    string username = "";
-    vector<string> breadCrumb;
-    string current_dir_name = "";
-    FileEncrypter enc;
-    CreateUser mCreateUser;
-    RSAEncryption mRSAEncryption;
-    ShareFile mShareFile;
-    KeyEncrypter mKeyEncrypter;
-    bool is_admin;
     FileEncrypter mFileEncrypter;
 
 public:
 
 
-
-
 };
 
-#endif //FILESYSTEM_APP_MENU_H
+#endif //FILESYSTEM_APP_RSAENCRYPTION_H
