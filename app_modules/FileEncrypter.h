@@ -7,6 +7,7 @@
 #include <openssl/evp.h>
 #include <openssl/aes.h>
 #include <vector>
+#include "KeyEncrypter.h"
 
 using namespace std;
 
@@ -14,8 +15,10 @@ class FileEncryptor {
 
 private:
     static unsigned char key[16];
+    KeyEncrypter mKeyEncrypter;
 
 public:
+
 
 };
 
