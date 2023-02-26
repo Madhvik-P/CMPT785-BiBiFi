@@ -37,6 +37,18 @@ private:
 
 public:
 
+    void printDecryptedContent(const string& encryptedFile, const string& privateKeyFile, bool is_admin, const string& private_key_name_for_admin, vector<string> paths){
+        string content = decryptRSA(encryptedFile, privateKeyFile, is_admin, private_key_name_for_admin, paths);
+        cout.write((char*)content.data(), content.size());
+        cout << endl;
+    }
+
+    string read_file(string file_path) {
+        ifstream file(file_path);
+        stringstream buffer;
+        buffer << file.rdbuf();
+        return buffer.str();
+    }
 
 };
 
