@@ -17,6 +17,7 @@
 #include "AppConstants.h"
 #include "CreateUser.h"
 #include "Randomizer.h"
+#include "KeyEncrypter.h"
 
 using namespace AppUtils;
 using namespace AppConstants::DefaultDirectory;
@@ -27,6 +28,7 @@ class Auth {
 private:
     CreateUser mCreateUser;
     Randomizer mRandom;
+    KeyEncrypter mKeyEncrypter;
 
 public:
 
