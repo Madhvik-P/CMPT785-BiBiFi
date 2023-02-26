@@ -22,6 +22,43 @@ namespace AppUtils {
     class Utils {
         public:
 
+        static vector<string> getPublicAndPrivateKeyPaths() {
+            string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
+            string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
+            vector<string> paths = Utils::getPublicAndPrivateKeysPath(root_path);
+            return paths;
+        }
+
+        static string translateDirOrFileWhenCreated(string name){
+            string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
+            string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
+
+            string filename_value = Randomizer::getMetaValue(root_path,name);
+
+            if(filename_value.empty()){
+                map<string, string> folder_key_values = {{
+                        name, Randomizer::generateRandomString()
+                }};
+                Randomizer::createMetaDataFile(root_path,folder_key_values);
+                filename_value = Randomizer::getMetaValue(root_path, name);
+            }
+            return filename_value;
+        }
+
+        static bool isFileType(string input) {
+            struct stat fileInfo;
+            if (stat(input.c_str(), &fileInfo) < 0) {
+                cout << "Error: Unable to stat file/directory." << endl;
+                return false;
+            }
+            if (S_ISREG(fileInfo.st_mode)) {
+                return true;
+            }
+            cout << "\nThe name entered is not a file.\n";
+            return false;
+        }
+
+
         static Command findCommand(const map<Command, bool> &values) {
 
             Command result;
