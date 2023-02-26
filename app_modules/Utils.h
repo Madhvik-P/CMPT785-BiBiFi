@@ -22,6 +22,20 @@ namespace AppUtils {
     class Utils {
         public:
 
+        static Command findCommand(const map<Command, bool> &values) {
+
+            Command result;
+            int trueCount = 0;
+            for (const auto &[command, value]: values) {
+                if (value) {
+                    trueCount++;
+                    result = command;
+                }
+            }
+            return (trueCount == 1) ? result : CMD_INVALID;
+        }
+
+
 
         
 
