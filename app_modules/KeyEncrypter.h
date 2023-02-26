@@ -77,10 +77,63 @@ public:
 
     }
 
-    
+    unsigned char* decryptAESKey(vector<string> paths, string username) {
 
+        // Load private key
+        RSA *private_key = nullptr;
+        string private_key_path = paths[1] + "/" + username + PRIVATE_KEY_EXT;
+        char* private_key_file = new char[private_key_path.length() + 1];
+        strcpy(private_key_file, private_key_path.c_str());
+        FILE *private_key_fp = fopen(private_key_file, "r");
 
+        if (!private_key_fp) {
+            cout << "Error opening private key file" << endl;
+            return nullptr;
+        }
 
+        private_key = PEM_read_RSAPrivateKey(private_key_fp, nullptr, nullptr, nullptr);
+        fclose(private_key_fp);
+
+        if (!private_key) {
+            cout << "\nInvalid keyfile\n" << endl;
+            return nullptr;
+        }
+
+        // Load encrypted key from file
+        string aes_private_key_path = paths[0] + "/" + username + AES_KEY_EXT;
+
+        char* encrypted_key_file = new char[aes_private_key_path.length() + 1];
+        strcpy(encrypted_key_file, aes_private_key_path.c_str());
+        ifstream encrypted_key_stream(encrypted_key_file, ios::in | ios::binary);
+        if (!encrypted_key_stream.is_open()) {
+            cout << "\nInvalid keyfile\n" << endl;
+            RSA_free(private_key);
+            return nullptr;
+        }
+
+        const int RSA_ENCRYPTED_SIZE = RSA_size(private_key);
+        unsigned char encrypted_key[RSA_ENCRYPTED_SIZE];
+        encrypted_key_stream.read((char*) encrypted_key, RSA_ENCRYPTED_SIZE);
+        encrypted_key_stream.close();
+
+        // Decrypt AES key
+        const int AES_KEY_SIZE = 256;
+        unsigned char* aes_key = new unsigned char[AES_KEY_SIZE / 8];
+        int decrypted_key_size = RSA_private_decrypt(RSA_ENCRYPTED_SIZE, encrypted_key, aes_key, private_key, RSA_PKCS1_OAEP_PADDING);
+
+        if (decrypted_key_size == -1) {
+
+            cout << "\nInvalid keyfile\n" << endl;
+            RSA_free(private_key);
+            delete[] aes_key;
+            return nullptr;
+
+        }
+
+        RSA_free(private_key);
+        return aes_key;
+
+    }
 
 };
 
