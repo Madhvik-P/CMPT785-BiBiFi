@@ -211,6 +211,39 @@ public:
         return is_username_present;
     }
 
+
+    bool checkFilePresentInCurrentDir(string filename = "", string share_username = "") {
+        string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
+        string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
+        DIR *dir;
+        struct dirent *entry;
+        bool is_file_present = false;
+        dir = opendir(".");
+        if (!dir) {
+            cout << "Error: Could not open directory" << endl;
+        }
+        while ((entry = readdir(dir)) != NULL) {
+            string random_d_name = string(entry->d_name);
+            string value;
+            bool is_dot_symbol = random_d_name == "." || random_d_name == "..";
+            if(!is_dot_symbol)
+                value = Randomizer::getMetaKey(root_path, random_d_name);
+            else
+                value = random_d_name;
+
+            if (entry->d_type == DT_REG && !value.empty() && filename == value) {
+                is_file_present = true;
+            }
+        }
+        closedir(dir);
+
+        if(!is_file_present) {
+            cout << "File " << filename << " doesn't exist" << endl;
+        }
+        return is_file_present;
+    }
+
+
     void implShare(string filename, string share_username){
         string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
         string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
