@@ -47,6 +47,13 @@ public:
         else return 404;
     }
 
+    void createAdminUser() {
+        string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
+        string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
+        vector<string> paths = Utils::getPublicAndPrivateKeysPath(root_path);
+        mCreateUser.generateKeysForUser(ADMIN, paths);
+    }
+
     int checkAndCreateDirectory() {
         int p_status = stat(FILE_SYSTEM.c_str(), &info);
         if (p_status == 0 && S_ISDIR(info.st_mode)) return 200;
