@@ -80,6 +80,53 @@ public:
         return 0;
     }
 
+    string decryptRSA(const string& encryptedFile, const string& privateKeyFile, bool is_admin, const string& private_key_name_for_admin, vector<string> paths) {
+        // Read private key from file
+        FILE* privateKey = fopen(privateKeyFile.c_str(), "rb");
+        if (!privateKey) {
+            cout << "Error opening private key file." << endl;
+            return "";
+        }
+        RSA* rsa = PEM_read_RSAPrivateKey(privateKey, NULL, NULL, NULL);
+        fclose(privateKey);
+        if (!rsa) {
+            cout << "Error reading private key file." << endl;
+            return "";
+        }
+
+        // Read encrypted data from file
+        ifstream encryptedDataFile(encryptedFile, ios::in | ios::binary);
+        if(!encryptedDataFile && is_admin) {
+            RSA_free(rsa);
+            string key_name = mFileEncrypter.get_decrypted_data_dyn(private_key_name_for_admin,"",paths);
+            return print_decrypted_file(key_name, encryptedFile);
+        }
+        else if (!encryptedDataFile) {
+            cout << "decryptRSA: Error opening encrypted data file." << endl;
+            RSA_free(rsa);
+            return "";
+        }
+        vector<unsigned char> encryptedData((istreambuf_iterator<char>(encryptedDataFile)), istreambuf_iterator<char>());
+        encryptedDataFile.close();
+
+        // Decrypt encrypted data
+        vector<unsigned char> decryptedData(RSA_size(rsa));
+        int decryptedDataLen = RSA_private_decrypt(encryptedData.size(), &encryptedData[0], &decryptedData[0], rsa, RSA_PKCS1_OAEP_PADDING);
+        if(decryptedDataLen == -1 && is_admin) {
+            RSA_free(rsa);
+            string key_name = mFileEncrypter.get_decrypted_data_dyn(private_key_name_for_admin,"",paths);
+            return print_decrypted_file(key_name, encryptedFile);
+        }
+        if (decryptedDataLen == -1) {
+            cout << "Error decrypting data." << endl;
+            RSA_free(rsa);
+            return "";
+        }
+        
+        RSA_free(rsa);
+        return string((char*)&decryptedData[0], decryptedDataLen);
+    }
+
     void printDecryptedContent(const string& encryptedFile, const string& privateKeyFile, bool is_admin, const string& private_key_name_for_admin, vector<string> paths){
         string content = decryptRSA(encryptedFile, privateKeyFile, is_admin, private_key_name_for_admin, paths);
         cout.write((char*)content.data(), content.size());
