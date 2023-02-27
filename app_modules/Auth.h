@@ -92,6 +92,25 @@ public:
         else return 500;
     }
 
+    unsigned char* login(string username) {
+        string pwd = Utils::getPwdPath();
+        string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
+        string users_path = root_path + "/" + Randomizer::getMetaValue(root_path, USERS);
+        vector<string> all_files = Utils::getFilesInsideDir(users_path);
+        string public_key_name = Utils::findPublicKey(all_files, username);
+
+        vector<string> paths = Utils::getPublicAndPrivateKeysPath(root_path);
+        unsigned char* key = mKeyEncrypter.decryptAESKey(paths, username);
+        return key;
+    }
+
+    void changeDirToUsernameIfNotAdmin(bool is_admin, string username){
+        if(!is_admin) {
+            string root_path = Utils::getRootDirPath(Utils::getPwdPath(), FILE_SYSTEM);
+            string randomised_username = Randomizer::getMetaValue(root_path, username);
+            chdir(randomised_username.c_str());
+        }
+    }
 };
 
 #endif //FILESYSTEM_APP_AUTH_H
