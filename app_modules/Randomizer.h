@@ -74,6 +74,16 @@ public:
         return it->second;
     }
 
+    static string getMetaKey(string root_dir, string value) {
+        map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);
+        for (auto it = key_value_pairs.begin(); it != key_value_pairs.end(); ++it) {
+            if (it->second == value) {
+                return it->first;
+            }
+        }
+        return "";
+    }
+
     static string getTranslatedPathRev(string root_dir, string input) {
         map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);
         vector<string> dirs;
