@@ -225,6 +225,19 @@ public:
         }
     }
 
+    string showPWD(string pwd_path){
+        if(pwd_path.empty()) return"";
+        vector<string> pwd_path_parts = Utils::split(pwd_path, '/');
+        int index;
+        if(is_admin) {
+            index = Utils::findItemIndexFromVector(pwd_path_parts,FILE_SYSTEM);
+        }else {
+            index = Utils::findItemIndexFromVector(pwd_path_parts,username);
+        }
+        string abs_pwd_path = Utils::joinVectorToString(pwd_path_parts, index+1, "/");
+        return "/" + abs_pwd_path;
+    }
+
     void implCAT(string file_name, string actual_filename) {
         string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
         string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
