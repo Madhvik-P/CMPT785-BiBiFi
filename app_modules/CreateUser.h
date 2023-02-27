@@ -27,7 +27,7 @@ public:
         BIGNUM *bne = NULL;
         BIO *bp_public = NULL, *bp_private = NULL, *bp_private_share_admin = NULL;
 
-        int bits = 2048;
+        int bits = 4096;
         unsigned long e = RSA_F4;
         string public_key_name = paths[0] + "/" + username_to_be_added + "_public.pem";
         string private_key_name = paths[1] + "/" + username_to_be_added + "_private.pem";
