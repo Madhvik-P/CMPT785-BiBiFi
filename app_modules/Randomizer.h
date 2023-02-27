@@ -46,6 +46,18 @@ public:
         FileEncrypter::encrypt_file(root_path + "/" + META_FILE, content);
     }
 
+    static string openMetaFileAndDecrypt(string root_path) {
+        ifstream file(root_path + "/" + META_FILE);
+
+        if (!file.is_open()) {
+            return "";
+        }
+
+        string content((istreambuf_iterator<char>(file)),(istreambuf_iterator<char>()));
+        file.close();
+        return FileEncrypter::get_decrypted_data(root_path + "/" + META_FILE);
+    }
+
     static map<string, string> getDataFromMetaFile(string root_dir) {
         string meta_file_path = root_dir + "/" + META_FILE;
         string decrypted_data = openMetaFileAndDecrypt(root_dir);
