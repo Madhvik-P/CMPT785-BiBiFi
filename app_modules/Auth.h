@@ -31,7 +31,7 @@ private:
     KeyEncrypter mKeyEncrypter;
 
 public:
-
+    // 
     int checkAndCreateAdmin(bool is_admin) {
         int status_code = checkAndCreateDirectory();
         if(status_code == 201) {
@@ -40,30 +40,13 @@ public:
         if (status_code == 201 || status_code == 200) chdir(FILE_SYSTEM.c_str());
         return status_code;
     }
-
+    // 
     int checkFileSystemExits(bool is_admin) {
         int p_status = stat(FILE_SYSTEM.c_str(), &info);
         if (p_status == 0 && S_ISDIR(info.st_mode)) return 200;
         else return 404;
     }
-
-    void createAdminUser() {
-        string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
-        string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
-        vector<string> paths = Utils::getPublicAndPrivateKeysPath(root_path);
-        mCreateUser.generateKeysForUser(ADMIN, paths);
-    }
-
-    string getUsernameFromPrivateKey(string key) {
-        vector<string> key_paths = Utils::split(key, '_');
-        if(key_paths.empty()) {
-            cout << "\nWrong key format" << endl;
-            return "";
-        }
-        string username = key_paths[0];
-        return username;
-    }
-    
+    // 
     int checkAndCreateDirectory() {
         int p_status = stat(FILE_SYSTEM.c_str(), &info);
         if (p_status == 0 && S_ISDIR(info.st_mode)) return 200;
@@ -102,6 +85,26 @@ public:
         else return 500;
     }
 
+    // 
+    void createAdminUser() {
+        string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
+        string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
+        vector<string> paths = Utils::getPublicAndPrivateKeysPath(root_path);
+        mCreateUser.generateKeysForUser(ADMIN, paths);
+        mKeyEncrypter.generateAndStoreAESKey(ADMIN, paths);
+    }
+
+    // 
+    string getUsernameFromPrivateKey(string key) {
+        vector<string> key_paths = Utils::split(key, '_');
+        if(key_paths.empty()) {
+            cout << "\nWrong key format" << endl;
+            return "";
+        }
+        string username = key_paths[0];
+        return username;
+    }
+    // 
     unsigned char* login(string username) {
         string pwd = Utils::getPwdPath();
         string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
@@ -113,7 +116,7 @@ public:
         unsigned char* key = mKeyEncrypter.decryptAESKey(paths, username);
         return key;
     }
-
+    
     void changeDirToUsernameIfNotAdmin(bool is_admin, string username){
         if(!is_admin) {
             string root_path = Utils::getRootDirPath(Utils::getPwdPath(), FILE_SYSTEM);
@@ -121,6 +124,7 @@ public:
             chdir(randomised_username.c_str());
         }
     }
+
 };
 
 #endif //FILESYSTEM_APP_AUTH_H

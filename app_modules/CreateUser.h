@@ -94,6 +94,4 @@ public:
 };
 
 
-};
-
 #endif //FILESYSTEM_APP_CREATEUSER_H

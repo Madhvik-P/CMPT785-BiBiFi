@@ -58,22 +58,6 @@ public:
         return FileEncrypter::get_decrypted_data(root_path + "/" + META_FILE);
     }
 
-    static map<string, string> getDataFromMetaFile(string root_dir) {
-        string meta_file_path = root_dir + "/" + META_FILE;
-        string decrypted_data = openMetaFileAndDecrypt(root_dir);
-        stringstream ss(decrypted_data);
-        map<string, string> key_value_pairs;
-        string line;
-        while (getline(ss, line)) {
-            size_t pos = line.find(' ');
-            if (pos != string::npos) {
-                string _key = line.substr(0, pos);
-                string value = line.substr(pos + 1);
-                key_value_pairs[_key] = value;
-            }
-        }
-        return key_value_pairs;
-    }
 
     static map<string, string> getDataFromMetaFile(string root_dir) {
         string meta_file_path = root_dir + "/" + META_FILE;

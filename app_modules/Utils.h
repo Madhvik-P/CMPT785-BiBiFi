@@ -53,7 +53,7 @@ namespace AppUtils {
 
             return words;
         };
-        // Anant
+        // 
         static bool checkIfPathContainsRootDir(vector<string> inputArray, bool is_admin, string username) {
             bool containsFilesystem = false;
 
