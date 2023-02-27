@@ -229,6 +229,15 @@ namespace AppUtils {
             return public_key;
         }
 
+        static bool startsWithPersonal(const string& str) {
+            // Check if the string starts with "/personal"
+            bool isPersonalFound = str.compare(0, 9, "/"+PERSONAL) == 0;
+            if(!isPersonalFound) {
+                cout << "\nForbidden\n" << endl;
+            }
+            return isPersonalFound;
+        }
+
     };
 }
 
