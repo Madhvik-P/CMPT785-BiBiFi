@@ -211,6 +211,20 @@ public:
         return is_username_present;
     }
 
+    void implShare(string filename, string share_username){
+        string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
+        string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
+        string share_destination_path = root_path + "/" + share_username + "/"
+                + Randomizer::getMetaValue(root_path, SHARED);
+        string cmd = CP + " " + filename + " " + share_destination_path;
+        int exit_code = system(cmd.c_str());
+        if (exit_code == 0) {
+            cout << "File shared successfully." << endl;
+        } else {
+            cout << "Failed to share the file." << endl;
+        }
+    }
+
     void implCAT(string file_name, string actual_filename) {
         string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
         string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
