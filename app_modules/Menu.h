@@ -258,6 +258,17 @@ public:
         }
     }
 
+    string implPWD() {
+        string cwd = Utils::getPwdPath();
+        vector<string> tokens = Utils::split(cwd, '/');
+
+        string pwd = cwd + "/" + FILE_SYSTEM;
+        string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
+
+        current_dir_name = Randomizer::getMetaKey(root_path, tokens[tokens.size() - 1]);
+        return cwd;
+    }
+    
     string showPWD(string pwd_path){
         if(pwd_path.empty()) return"";
         vector<string> pwd_path_parts = Utils::split(pwd_path, '/');
