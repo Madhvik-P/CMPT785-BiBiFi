@@ -48,6 +48,44 @@ public:
         out_file.close();
     }
 
+    static vector<unsigned char> decrypt_file(string file_name, string actual_filename = "") {
+        AES_KEY aes_key;
+        AES_set_decrypt_key(key, 128, &aes_key);
+        vector<unsigned char> out_buf;
+        ifstream in_file(file_name, ios::in | ios::binary);
+        if (!in_file.is_open()) {
+            cout << actual_filename << " doesn't exist." << endl;
+            return out_buf;
+        }
+        vector<unsigned char> in_buf(istreambuf_iterator<char>(in_file), {});
+        in_file.close();
+        for (int i = 0; i < in_buf.size(); i += 16) {
+            unsigned char block_in[16], block_out[16];
+            for (int j = 0; j < 16; j++) {
+                block_in[j] = in_buf[i + j];
+            }
+            AES_decrypt(block_in, block_out, &aes_key);
+            for (int j = 0; j < 16; j++) {
+                out_buf.push_back(block_out[j]);
+            }
+        }
+        int padding = 0;
+        for (int i = out_buf.size() - 1; i >= 0; i--) {
+            if (out_buf[i] == '\0') {
+                padding++;
+            } else {
+                break;
+            }
+        }
+        out_buf.resize(out_buf.size() - padding);
+        return out_buf;
+    }
+
+    static void show_decrypted_data(string file_name, string actual_filename) {
+        vector<unsigned char> out_buf = decrypt_file(file_name, actual_filename);
+        cout.write((char*)out_buf.data(), out_buf.size());
+        cout << endl;
+    }
 
     static string get_decrypted_data(string file_name) {
         vector<unsigned char> out_buf = decrypt_file(file_name);
@@ -88,6 +126,38 @@ public:
         return string((char*)&decryptedData[0], decryptedDataLen);
     }
 
+    vector<unsigned char> decrypt_file_dyn(string file_name, string actual_filename, vector<string> paths) {
+        AES_KEY aes_key;
+        AES_set_decrypt_key(mKeyEncrypter.decryptAESKey(paths,ADMIN), 128, &aes_key);
+        vector<unsigned char> out_buf;
+        ifstream in_file(file_name, ios::in | ios::binary);
+        if (!in_file.is_open()) {
+            cout << actual_filename << " doesn't exist." << endl;
+            return out_buf;
+        }
+        vector<unsigned char> in_buf(istreambuf_iterator<char>(in_file), {});
+        in_file.close();
+        for (int i = 0; i < in_buf.size(); i += 16) {
+            unsigned char block_in[16], block_out[16];
+            for (int j = 0; j < 16; j++) {
+                block_in[j] = in_buf[i + j];
+            }
+            AES_decrypt(block_in, block_out, &aes_key);
+            for (int j = 0; j < 16; j++) {
+                out_buf.push_back(block_out[j]);
+            }
+        }
+        int padding = 0;
+        for (int i = out_buf.size() - 1; i >= 0; i--) {
+            if (out_buf[i] == '\0') {
+                padding++;
+            } else {
+                break;
+            }
+        }
+        out_buf.resize(out_buf.size() - padding);
+        return out_buf;
+    }
 
 };
 
