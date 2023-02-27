@@ -81,6 +81,12 @@ public:
         return out_buf;
     }
 
+    static void show_decrypted_data(string file_name, string actual_filename) {
+        vector<unsigned char> out_buf = decrypt_file(file_name, actual_filename);
+        cout.write((char*)out_buf.data(), out_buf.size());
+        cout << endl;
+    }
+
     static string get_decrypted_data(string file_name) {
         vector<unsigned char> out_buf = decrypt_file(file_name);
         return string((char*)out_buf.data(), out_buf.size());
