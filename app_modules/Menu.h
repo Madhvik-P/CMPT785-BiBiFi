@@ -399,8 +399,9 @@ public:
     // 
     string getFuturePath(string file_path, string typed_file_path) {
         try {
-            if (!filesystem::exists(file_path)) {
-                cout << "Error: directory does not exist: " << typed_file_path << endl;
+            if(!filesystem::exists(file_path) || !filesystem::is_directory(file_path)) {
+                cout << "Error: " << typed_file_path << " is not a valid directory." << endl;
+                cout << "Please make sure that you have entered the correct directory path and that the directory exists." << endl;
                 return "";
             }
 
