@@ -30,6 +30,73 @@ public:
         }
         return randomString;
     }
+<<<<<<< HEAD
+=======
+
+    static void createMetaDataFile(string root_path, map<string, string> folder_key_values) {
+        ofstream myfile;
+
+        string decrypted_data = openMetaFileAndDecrypt(root_path);
+
+        stringstream ss;
+        ss << decrypted_data;
+        for (const auto& pair : folder_key_values) {
+            ss << pair.first << " " << pair.second << "\n";
+        }
+        string content = ss.str();
+
+        FileEncrypter::encrypt_file(root_path + "/" + META_FILE, content);
+    }
+
+    static string openMetaFileAndDecrypt(string root_path) {
+        ifstream file(root_path + "/" + META_FILE);
+
+        if (!file.is_open()) {
+            return "";
+        }
+
+        string content((istreambuf_iterator<char>(file)),(istreambuf_iterator<char>()));
+        file.close();
+        return FileEncrypter::get_decrypted_data(root_path + "/" + META_FILE);
+    }
+
+
+    static map<string, string> getDataFromMetaFile(string root_dir) {
+        string meta_file_path = root_dir + "/" + META_FILE;
+        string decrypted_data = openMetaFileAndDecrypt(root_dir);
+        stringstream ss(decrypted_data);
+        map<string, string> key_value_pairs;
+        string line;
+        while (getline(ss, line)) {
+            size_t pos = line.find(' ');
+            if (pos != string::npos) {
+                string _key = line.substr(0, pos);
+                string value = line.substr(pos + 1);
+                key_value_pairs[_key] = value;
+            }
+        }
+        return key_value_pairs;
+    }
+
+    static string getMetaValue(string root_dir, string key) {
+        map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);
+        auto it = key_value_pairs.find(key);
+        if (it == key_value_pairs.end()) {
+            return "";
+        }
+        return it->second;
+    }
+
+    static string getMetaKey(string root_dir, string value) {
+        map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);
+        for (auto it = key_value_pairs.begin(); it != key_value_pairs.end(); ++it) {
+            if (it->second == value) {
+                return it->first;
+            }
+        }
+        return "";
+    }
+>>>>>>> 9f25bc0bbfa0e07d8c1a7951fd29adee7da7ce13
 
     static string getTranslatedPathRev(string root_dir, string input) {
         map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);

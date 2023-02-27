@@ -8,13 +8,14 @@ using namespace AppConstants::DefaultDirectory;
 using namespace std;
 
 int main(int argc, char* argv[]) {
-     
-     if(argc != 2) {
+
+    if(argc != 2) {
         cout << "\nPlease provide the keyfile for authentication purposes.\n" << endl;
         return 0;
     }
 
     Auth auth;
+    KeyEncrypter mKeyEncrypter;
 
     string username = auth.getUsernameFromPrivateKey(argv[1]);
     if(username.empty()) return 0;
@@ -29,12 +30,18 @@ int main(int argc, char* argv[]) {
 
     int create_admin_status = auth.checkAndCreateAdmin(is_admin);
 
-    if (create_admin_status != 201) {
-        int login_status = auth.login(username);
-        if (login_status == 0) return 0;
+    unsigned char* login_status;
+    if(create_admin_status == 201) {
+        login_status = mKeyEncrypter.decryptAESKey(Utils::getPublicAndPrivateKeyPaths(),username);
     }
-    auth.changeDirToUsernameIfNotAdmin(is_admin, username);
 
+    if (create_admin_status != 201) {
+        login_status = auth.login(username);
+    }
+
+    if (login_status == nullptr) return 0;
+
+    auth.changeDirToUsernameIfNotAdmin(is_admin, username);
     Menu menu(username, is_admin);
     menu.showCMD();
     return 0;
