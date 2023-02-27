@@ -54,6 +54,16 @@ public:
         mCreateUser.generateKeysForUser(ADMIN, paths);
     }
 
+    string getUsernameFromPrivateKey(string key) {
+        vector<string> key_paths = Utils::split(key, '_');
+        if(key_paths.empty()) {
+            cout << "\nWrong key format" << endl;
+            return "";
+        }
+        string username = key_paths[0];
+        return username;
+    }
+    
     int checkAndCreateDirectory() {
         int p_status = stat(FILE_SYSTEM.c_str(), &info);
         if (p_status == 0 && S_ISDIR(info.st_mode)) return 200;
