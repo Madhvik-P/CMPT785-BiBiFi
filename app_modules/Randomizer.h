@@ -65,6 +65,15 @@ public:
         return key_value_pairs;
     }
 
+    static string getMetaValue(string root_dir, string key) {
+        map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);
+        auto it = key_value_pairs.find(key);
+        if (it == key_value_pairs.end()) {
+            return "";
+        }
+        return it->second;
+    }
+
     static string getTranslatedPathRev(string root_dir, string input) {
         map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);
         vector<string> dirs;
