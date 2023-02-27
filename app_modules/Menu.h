@@ -386,7 +386,7 @@ public:
         string root_dir = Utils::getRootDirPath(Utils::getPwdPath(),FILE_SYSTEM);
         translated_path = Randomizer::getTranslatedPath(root_dir, token);
 
-        string f_path = getFuturePath(translated_path);
+        string f_path = getFuturePath(translated_path, token);
         vector<string> _f_path_parts = Utils::split(f_path, '/');
         string randomised_username = Randomizer::getMetaValue(root_dir, username);
         bool contains_root_dir = Utils::checkIfPathContainsRootDir(_f_path_parts, is_admin, randomised_username);
@@ -397,15 +397,20 @@ public:
     }
 
     // 
-    string getFuturePath(string file_path) {
+    string getFuturePath(string file_path, string typed_file_path) {
         try {
-            string command = "cd " + file_path + "&& pwd";
+            if (!filesystem::exists(file_path)) {
+                cout << "Error: directory does not exist: " << typed_file_path << endl;
+                return "";
+            }
+
+            string command = "cd " + file_path + " && pwd";
             string futurePath = "";
 
             // execute command and capture output
             FILE* pipe = popen(command.c_str(), "r");
             if (!pipe) {
-                cout << "Error executing command: " << command << endl;
+                cout << "Error executing command: " << typed_file_path << endl;
                 return "";
             }
 
@@ -418,7 +423,7 @@ public:
             // remove trailing newline
             futurePath.erase(futurePath.find_last_not_of("\n") + 1);
             return futurePath;
-        }catch(const filesystem_error& ex){
+        } catch(const filesystem::filesystem_error& ex) {
             cout << "Error: " << ex.what() << endl;
             return "";
         }
