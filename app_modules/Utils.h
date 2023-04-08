@@ -44,11 +44,11 @@ namespace AppUtils {
 
         static bool validateInput(string input) {
             // Check if input is "." or ".."
-            if (input == "." || input == "..") {
+            if (input == "." || input == ".." || input == "/") {
                 return false;
             }
             // Check if input starts with "." or ".."
-            if (input.size() > 0 && (input[0] == '.' || (input.size() > 1 && input.substr(0, 2) == ".."))) {
+            if (input.size() > 0 && (input[0] == '.' || input[0] == '/' || (input.size() > 1 && input.substr(0, 2) == ".."))) {
                 return false;
             }
             return true;
