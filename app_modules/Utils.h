@@ -54,7 +54,8 @@ namespace AppUtils {
             return true;
         }
 
-        static vector<string> split(string s, char delimiter) {
+        static vector<string> split(string str, char delimiter) {
+            string s = trim(str);
             vector<string> words;
             istringstream iss(s);
             string word;
@@ -65,6 +66,13 @@ namespace AppUtils {
 
             return words;
         };
+
+        static string replaceMultipleSpacesWithSingleSpace(string str)
+        {
+            regex pattern("\\s+");
+            return regex_replace(str, pattern, " ");
+        }
+
         // 
         static bool checkIfPathContainsRootDir(vector<string> inputArray, bool is_admin, string username) {
             bool containsFilesystem = false;
@@ -248,6 +256,23 @@ namespace AppUtils {
                 cout << "\nForbidden\n" << endl;
             }
             return isPersonalFound;
+        }
+
+        static string trim(string str)
+        {
+            // Trim leading spaces
+            while (!str.empty() && isspace(str.front()))
+            {
+                str.erase(0, 1);
+            }
+
+            // Trim trailing spaces
+            while (!str.empty() && isspace(str.back()))
+            {
+                str.pop_back();
+            }
+
+            return str;
         }
 
     };
