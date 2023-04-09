@@ -29,9 +29,9 @@ namespace AppUtils {
             bool is_size_three = tokens.size() == 3;
             map<Command, bool> values = {
                     {CMD_EXIT,    !tokens.empty() && tokens[0] == EXIT},
-                    {CMD_ADDUSER, is_size_two && tokens[0] == ADDUSER},
-                    {CMD_MKFILE,  is_size_more_than_one && tokens[0] == MKFILE},
-                    {CMD_MKDIR,   is_size_two && tokens[0] == MKDIR},
+                    {CMD_ADDUSER, is_size_two && tokens[0] == ADDUSER && validateInput(tokens[1])},
+                    {CMD_MKFILE,  is_size_more_than_one && tokens[0] == MKFILE && validateInput(tokens[1])},
+                    {CMD_MKDIR,   is_size_two && tokens[0] == MKDIR && validateInput(tokens[1])},
                     {CMD_SHARE,   is_size_three && tokens[0] == SHARE},
                     {CMD_CAT,     is_size_two && tokens[0] == CAT},
                     {CMD_LS,      (is_size_two && tokens[0] == LS) || input == LS},
@@ -42,7 +42,20 @@ namespace AppUtils {
             return findCommand(values);
         };
 
-        static vector<string> split(string s, char delimiter) {
+        static bool validateInput(string input) {
+            // Check if input is "." or ".."
+            if (input == "." || input == ".." || input == "/") {
+                return false;
+            }
+            // Check if input starts with "." or ".."
+            if (input.size() > 0 && (input[0] == '.' || input[0] == '/' || (input.size() > 1 && input.substr(0, 2) == ".."))) {
+                return false;
+            }
+            return true;
+        }
+
+        static vector<string> split(string str, char delimiter) {
+            string s = trim(str);
             vector<string> words;
             istringstream iss(s);
             string word;
@@ -53,6 +66,13 @@ namespace AppUtils {
 
             return words;
         };
+
+        static string replaceMultipleSpacesWithSingleSpace(string str)
+        {
+            regex pattern("\\s+");
+            return regex_replace(str, pattern, " ");
+        }
+
         // 
         static bool checkIfPathContainsRootDir(vector<string> inputArray, bool is_admin, string username) {
             bool containsFilesystem = false;
@@ -236,6 +256,23 @@ namespace AppUtils {
                 cout << "\nForbidden\n" << endl;
             }
             return isPersonalFound;
+        }
+
+        static string trim(string str)
+        {
+            // Trim leading spaces
+            while (!str.empty() && isspace(str.front()))
+            {
+                str.erase(0, 1);
+            }
+
+            // Trim trailing spaces
+            while (!str.empty() && isspace(str.back()))
+            {
+                str.pop_back();
+            }
+
+            return str;
         }
 
     };
