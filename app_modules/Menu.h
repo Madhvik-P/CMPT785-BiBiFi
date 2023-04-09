@@ -133,6 +133,7 @@ public:
                         string  filename = Randomizer::getMetaValue(root_path,tokens[1]);
                         string share_username = Randomizer::getMetaValue(root_path,tokens[2]);
                         mShareFile.implShare(filename, share_username, tokens[1], tokens[2], username);
+                        Randomizer::updateTheSharedStatus(root_path, tokens[1], tokens[2]);
                     }
                     break;
                 }

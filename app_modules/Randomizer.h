@@ -76,6 +76,48 @@ public:
         return key_value_pairs;
     }
 
+    static void updateTheSharedStatus(string root_dir, string parent_file_name, string shared_username) {
+        string meta_file_path = root_dir + "/" + META_FILE;
+        string decrypted_data = openMetaFileAndDecrypt(root_dir);
+        size_t pos = decrypted_data.find(parent_file_name);
+        if (pos != std::string::npos) {
+            // Find the end of the line containing the file name
+            size_t endPos = decrypted_data.find('\n', pos);
+            std::string line = decrypted_data.substr(pos, endPos-pos);
+
+            if(line.find(SHARED) != std::string::npos){
+                line = line + " " + shared_username + "\n";
+            }else {
+                line = line + " " + SHARED + " " + shared_username + "\n";
+            }
+            std::cout << line << std::endl;
+            decrypted_data.replace(pos, endPos - pos + 1, line);
+        }
+        FileEncrypter::encrypt_file(root_dir + "/" + META_FILE, decrypted_data);
+        return;
+    }
+
+    static void checkTheShareStatus(string root_dir, string parent_file_name, string shared_username) {
+        string meta_file_path = root_dir + "/" + META_FILE;
+        string decrypted_data = openMetaFileAndDecrypt(root_dir);
+        size_t pos = decrypted_data.find(parent_file_name);
+        if (pos != std::string::npos) {
+            // Find the end of the line containing the file name
+            size_t endPos = decrypted_data.find('\n', pos);
+            std::string line = decrypted_data.substr(pos, endPos-pos);
+
+            if(line.find(SHARED) != std::string::npos){
+                line = line + " " + shared_username + "\n";
+            }else {
+                line = line + " " + SHARED + " " + shared_username + "\n";
+            }
+            std::cout << line << std::endl;
+            decrypted_data.replace(pos, endPos - pos + 1, line);
+        }
+        FileEncrypter::encrypt_file(root_dir + "/" + META_FILE, decrypted_data);
+        return;
+    }
+
     static string getMetaValue(string root_dir, string key) {
         map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);
         auto it = key_value_pairs.find(key);
