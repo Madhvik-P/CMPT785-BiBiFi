@@ -90,8 +90,8 @@ public:
     // 
     static string get_decrypted_data(string file_name) {
         vector<unsigned char> out_buf = decrypt_file(file_name);
-        // cout << "\n";
-        // cout << string((char*)out_buf.data(), out_buf.size()) << endl;
+//         cout << "\n";
+//         cout << string((char*)out_buf.data(), out_buf.size()) << endl;
         return string((char*)out_buf.data(), out_buf.size());
     }
 

@@ -117,24 +117,7 @@ public:
                 }
 
                 case CMD_SHARE: {
-                    if (username == tokens[2]) {
-                        cout << "The operation cannot be performed as you are attempting to share a file with your own account." << endl;
-                        break;
-                    }
-
-                    bool isReceiverAdmin = ADMIN == tokens[2];
-                    bool isFilePresent = checkFilePresentInCurrentDir(tokens[1]);
-                    if(!isFilePresent) break;
-                    bool isUser = isReceiverAdmin || checkUsernameExist(tokens[2]);
-                    bool isPresent = isFilePresent && isUser;
-
-                    if(isPresent) {
-                        string root_path = Utils::getRootDirPath(implPWD(), FILE_SYSTEM);
-                        string  filename = Randomizer::getMetaValue(root_path,tokens[1]);
-                        string share_username = Randomizer::getMetaValue(root_path,tokens[2]);
-                        mShareFile.implShare(filename, share_username, tokens[1], tokens[2], username);
-                        Randomizer::updateTheSharedStatus(root_path, tokens[1], tokens[2]);
-                    }
+                    implMenuShare(tokens[1], tokens[2]);
                     break;
                 }
 
@@ -174,6 +157,27 @@ public:
         }
         return 0;
 
+    }
+
+    void implMenuShare(string file_name, string to_username) {
+        if (username == to_username) {
+            cout << "The operation cannot be performed as you are attempting to share a file with your own account." << endl;
+            return;
+        }
+
+        bool isReceiverAdmin = ADMIN == to_username;
+        bool isFilePresent = checkFilePresentInCurrentDir(file_name);
+        if(!isFilePresent) return;
+        bool isUser = isReceiverAdmin || checkUsernameExist(to_username);
+        bool isPresent = isFilePresent && isUser;
+
+        if(isPresent) {
+            string root_path = Utils::getRootDirPath(implPWD(), FILE_SYSTEM);
+            string  filename = Randomizer::getMetaValue(root_path,file_name);
+            string share_username = Randomizer::getMetaValue(root_path,to_username);
+            mShareFile.implShare(filename, share_username, file_name, to_username, username);
+            Randomizer::updateTheSharedStatus(root_path, file_name, to_username);
+        }
     }
 
     string getRelativePWDPath(){
@@ -290,11 +294,22 @@ public:
     }
     // 
     void implMKFILE(string filename, string content) {
+        string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
+        string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
+        bool isShared = Randomizer::checkTheShareStatus(root_path,filename);
+
         string filename_value = Utils::translateDirOrFileWhenCreated(filename);
         string public_key_path = Utils::getPublicUserKeys() + "/" + username + PUBLIC_KEY_EXT;
         mRSAEncryption.encryptRSA(content, public_key_path, filename_value);
+
+        if(isShared){
+            vector<string> users = Randomizer::getSharedUsernames(root_path, filename);
+            for (const auto& user : users) {
+                implMenuShare(filename, user);
+            }
+        }
     }
-    // 
+
 
     // 
     string implPWD() {
