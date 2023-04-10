@@ -96,12 +96,15 @@ public:
 
     // 
     string getUsernameFromPrivateKey(string key) {
-        vector<string> key_paths = Utils::split(key, '_');
-        if(key_paths.empty()) {
-            cout << "\nWrong key format" << endl;
+        string username = "";
+        int pos = key.find(PRIVATE_KEY_EXT);
+        if (pos != string::npos) {  // check if "_private.pem" exists in the input string
+            username = key.substr(0, pos);  // extract the characters before "_private.pem"
+        }
+        if(username.empty()) {
+            cout << "\nWrong key format. The key format should be in the <username>_private.pem format." << endl;
             return "";
         }
-        string username = key_paths[0];
         return username;
     }
     // 

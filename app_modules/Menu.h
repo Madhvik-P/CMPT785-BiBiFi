@@ -62,7 +62,9 @@ public:
             else cout << current_dir_name + " $ ";
 
             getline(cin, input);
-
+            if(input.empty()) break;
+            input = Utils::trim(input);
+            input = Utils::replaceMultipleSpacesWithSingleSpace(input);
             vector<string> tokens = Utils::split(input, ' ');
 
             Command selectedCommand = Utils::getCommandName(tokens, input);

@@ -11,7 +11,6 @@ int main(int argc, char* argv[]) {
 
     if(argc != 2) {
         cout << "\nPlease provide the keyfile for authentication purposes.\n" << endl;
-        cout << "\ntest\n" << endl;
         return 0;
     }
 
