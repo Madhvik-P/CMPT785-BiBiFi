@@ -85,8 +85,8 @@ public:
             size_t endPos = decrypted_data.find('\n', pos);
             string line = decrypted_data.substr(pos, endPos-pos);
 
-//            cout << "BEFORE: " << endl;
-//            cout << line << endl;
+            // cout << "BEFORE: " << endl;
+            // cout << line << endl;
 
             if(line.find(shared_username) != string::npos) return;
 
@@ -94,8 +94,8 @@ public:
             else line = line + " " + SHARED + " " + shared_username + "\n";
             decrypted_data.replace(pos, endPos - pos + 1, line);
 
-//            cout << "AFTER: " << endl;
-//            cout << line << endl;
+            // cout << "AFTER: " << endl;
+            // cout << line << endl;
 
             FileEncrypter::encrypt_file(root_dir + "/" + META_FILE, decrypted_data);
         }

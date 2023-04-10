@@ -62,9 +62,11 @@ public:
             else cout << current_dir_name + " $ ";
 
             getline(cin, input);
-            if(input.empty()) break;
+            if(input.empty()) continue;
             input = Utils::trim(input);
             input = Utils::replaceMultipleSpacesWithSingleSpace(input);
+            if(input.empty()) continue;
+
             vector<string> tokens = Utils::split(input, ' ');
 
             Command selectedCommand = Utils::getCommandName(tokens, input);
@@ -178,7 +180,8 @@ public:
             string  filename = Randomizer::getMetaValue(root_path,file_name);
             string share_username = Randomizer::getMetaValue(root_path,to_username);
             mShareFile.implShare(filename, share_username, file_name, to_username, username);
-            Randomizer::updateTheSharedStatus(root_path, file_name, to_username);
+            string file_name_with_key_value = file_name + " " + Randomizer::getMetaValue(root_path, file_name);
+            Randomizer::updateTheSharedStatus(root_path, file_name_with_key_value, to_username);
         }
     }
 
@@ -299,6 +302,9 @@ public:
         string pwd = Utils::getPwdPath() + "/" + FILE_SYSTEM;
         string root_path = Utils::getRootDirPath(pwd, FILE_SYSTEM);
         bool isShared = Randomizer::checkTheShareStatus(root_path,filename);
+
+        // cout << "SHARED" << endl;
+        // cout << isShared << endl;
 
         string filename_value = Utils::translateDirOrFileWhenCreated(filename);
         string public_key_path = Utils::getPublicUserKeys() + "/" + username + PUBLIC_KEY_EXT;
