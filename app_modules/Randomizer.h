@@ -76,19 +76,100 @@ public:
         return key_value_pairs;
     }
 
+    static void updateTheSharedStatus(string root_dir, string parent_file_name, string shared_username) {
+        string meta_file_path = root_dir + "/" + META_FILE;
+        string decrypted_data = openMetaFileAndDecrypt(root_dir);
+        size_t pos = decrypted_data.find(parent_file_name);
+        if (pos != string::npos) {
+            // Find the end of the line containing the file name
+            size_t endPos = decrypted_data.find('\n', pos);
+            string line = decrypted_data.substr(pos, endPos-pos);
+
+            // cout << "BEFORE: " << endl;
+            // cout << line << endl;
+
+            if(line.find(shared_username) != string::npos) return;
+
+            if(line.find(SHARED) != string::npos) line = line + " " + shared_username + "\n";
+            else line = line + " " + SHARED + " " + shared_username + "\n";
+            decrypted_data.replace(pos, endPos - pos + 1, line);
+
+            // cout << "AFTER: " << endl;
+            // cout << line << endl;
+
+            FileEncrypter::encrypt_file(root_dir + "/" + META_FILE, decrypted_data);
+        }
+
+    }
+
+    static bool checkTheShareStatus(string root_dir, string parent_file_name) {
+        map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);
+        auto it = key_value_pairs.find(parent_file_name);
+        if (it == key_value_pairs.end()) {
+            return false;
+        }
+        string val = it->second;
+        if(val.find(SHARED) != string::npos) return true;
+        return false;
+    }
+
+    static vector<string> getSharedUsernames(string root_dir, string parent_file_name) {
+        map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);
+        auto it = key_value_pairs.find(parent_file_name);
+        if (it == key_value_pairs.end()) {
+            return {};
+        }
+        string input = it->second;
+        // Find the start and end positions of the "shared" substring
+        size_t start = input.find(SHARED) + SHARED.length() + 1; // add 7 to skip past "shared "
+        size_t end = input.length();
+
+        // Extract the substring containing the values we're interested in
+        vector<string> users;
+        string values = input.substr(start, end - start);
+
+        // Use a string stream to split the values into individual strings
+        istringstream iss(values);
+        string value;
+        while (iss >> value) {
+            users.push_back(value);
+        }
+        return users;
+    }
+
     static string getMetaValue(string root_dir, string key) {
         map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);
         auto it = key_value_pairs.find(key);
         if (it == key_value_pairs.end()) {
             return "";
         }
+        if(it->second.find(' ')) {
+            string val = split(it->second, ' ')[0];
+            return val;
+        }
         return it->second;
     }
+
+    static vector<string> split(string s, char delimiter) {
+        vector<string> words;
+        istringstream iss(s);
+        string word;
+
+        while (getline(iss, word, delimiter)) {
+            words.push_back(word);
+        }
+
+        return words;
+    };
 
     static string getMetaKey(string root_dir, string value) {
         map<string, string> key_value_pairs = getDataFromMetaFile(root_dir);
         for (auto it = key_value_pairs.begin(); it != key_value_pairs.end(); ++it) {
-            if (it->second == value) {
+            string val = it->second;
+            if(it->second.find(' ')) {
+                 val = split(it->second, ' ')[0];
+            }
+            if (val == value) {
                 return it->first;
             }
         }
