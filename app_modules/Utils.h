@@ -44,13 +44,18 @@ namespace AppUtils {
 
         static bool validateInput(string input) {
             // Check if input is "." or ".."
-            if (input == "." || input == ".." || input == "/") {
+            if (input == "." || input == "..") {
                 return false;
             }
             // Check if input starts with "." or ".."
             if (input.size() > 0 && (input[0] == '.' || input[0] == '/' || (input.size() > 1 && input.substr(0, 2) == ".."))) {
                 return false;
             }
+
+            if (input.find('/') != std::string::npos) { // Check if the input string contains the "/" character
+                return false;
+            }
+
             return true;
         }
 
